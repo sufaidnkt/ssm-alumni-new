@@ -1,0 +1,79 @@
+<?php
+function ssm_widgets_init(){}
+  
+function ssm_widgets_block_info(){
+  $blocks =array();
+    $blocks['alumni_total_members'] = array('info' => t('Total Alumni Members'));
+    $blocks['alumni_my_class'] = array('info' => t('My Class Members Count'));
+    $blocks['alumni_my_batch'] = array('info' => t('My Batch Members Count'));
+
+    return $blocks;
+}
+
+function ssm_widgets_block_view($delta = '') { 
+  afl_inc_file('inc', 'ssm_widgets', '/inc/ssm.widgets.block-callback');
+  switch ($delta) {
+    case 'alumni_total_members':
+      $block['content'] = _alumni_total_members();
+    break;
+    case 'alumni_my_class':
+      $block['content'] = _alumni_my_class_members();
+    break;
+    case 'alumni_my_batch':
+      $block['content'] = _alumni_my_batch_members();
+    break;
+    
+  }
+  return $block;
+}
+/*
+ * --------------------------------------------------------------
+ * Hook menu
+ * --------------------------------------------------------------
+*/
+  function ssm_widgets_menu(){ 
+    // afl_inc_file('inc', 'ssm_widgets', 'inc/ssm.menu.widgets');
+    // return _ssm_widgets_menus();
+   $items['alumni/widget/ajax/total-members'] = array(
+    'title' => t('Total Alumni Members'),
+    'type'=> MENU_CALLBACK,
+    'page callback' => '_alumni_total_members',
+    'page arguments' => array(3),
+    'access arguments' => array('alumni dashboard widgets'),
+    'file' => 'inc/ssm.menu.callback.widgets.inc',
+    'file path' => drupal_get_path('module', 'ssm_widgets'),
+  );
+
+  $items['alumni/widget/ajax/my-class'] = array(
+    'title' => t('My Class Members'),
+    'type'=> MENU_CALLBACK,
+    'page callback' => '_alumni_my_class_members',
+    'page arguments' => array(3),
+    'access arguments' => array('alumni dashboard widgets'),
+    'file' => 'inc/ssm.menu.callback.widgets.inc',
+    'file path' => drupal_get_path('module', 'ssm_widgets'),
+  );
+
+  $items['alumni/widget/ajax/my-batch'] = array(
+    'title' => t('My Batch Members'),
+    'type'=> MENU_CALLBACK,
+    'page callback' => '_alumni_my_batch_members',
+    'page arguments' => array(3),
+    'access arguments' => array('alumni dashboard widgets'),
+    'file' => 'inc/ssm.menu.callback.widgets.inc',
+    'file path' => drupal_get_path('module', 'ssm_widgets'),
+  );
+
+  return $items;
+  }
+/*
+ * --------------------------------------------------------------
+ * Hook permissions
+ * --------------------------------------------------------------
+*/
+  function ssm_widgets_permission() {
+    return array(
+      'alumni dashboard widgets' => array('title' => t('Dashboard Widgets (Ajax callback)')),
+    );
+  }
+
